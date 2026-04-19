@@ -1,2 +1,2 @@
-const BASE_URL = "https://password-reset-app-6yp1.vercel.app/forgot";
+const BASE_URL = "https://password-reset-app-ak8k.onrender.com/api/users";
 export default BASE_URL;
