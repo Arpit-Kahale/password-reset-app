@@ -1,2 +1,2 @@
-const BASE_URL = "http://localhost:5000/api/users";
+const BASE_URL = "https://your-backend.onrender.com/api/users";
 export default BASE_URL;

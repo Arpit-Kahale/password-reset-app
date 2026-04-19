@@ -9,7 +9,15 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// ✅ CORS FIX (PRODUCTION READY)
+app.use(
+  cors({
+    origin: "https://password-reset-app-virid.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -19,6 +27,7 @@ app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
+// PORT
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
