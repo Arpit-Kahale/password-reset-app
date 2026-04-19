@@ -13,7 +13,7 @@ app.use(express.json());
 // ✅ CORS FIX (PRODUCTION READY)
 app.use(
   cors({
-    origin: "https://password-reset-app-virid.vercel.app",
+    origin: "https://password-reset-app-6yp1.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
