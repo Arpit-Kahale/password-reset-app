@@ -11,13 +11,11 @@ const app = express();
 app.use(express.json());
 
 // ✅ CORS FIX (PRODUCTION READY)
-app.use(
-  cors({
-    origin: "https://password-reset-app-6yp1.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "https://password-reset-app-6yp1-git-master-arpit-kahales-projects.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+}));
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
