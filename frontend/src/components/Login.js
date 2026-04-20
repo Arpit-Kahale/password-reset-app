@@ -6,9 +6,19 @@ import { Link } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    if (e) e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await axios.post(`${BASE_URL}/login`, {
         email,
         password,
@@ -16,8 +26,12 @@ function Login() {
 
       localStorage.setItem("token", res.data.token);
       alert("Login Successful");
+
     } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      alert(err.response?.data?.msg || "Server Error");
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,6 +46,7 @@ function Login() {
             <input
               className="form-control mb-3"
               placeholder="Email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -39,11 +54,16 @@ function Login() {
               className="form-control mb-3"
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className="btn btn-success w-100" onClick={handleLogin}>
-              Login
+            <button
+              className="btn btn-success w-100"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-center mt-3">

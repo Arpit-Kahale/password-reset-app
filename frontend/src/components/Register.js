@@ -6,16 +6,31 @@ import { Link } from "react-router-dom";
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    if (e) e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await axios.post(`${BASE_URL}/register`, {
         email,
         password,
       });
+
       alert(res.data.msg);
+
     } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      alert(err.response?.data?.msg || "Server Error");
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,6 +45,7 @@ function Register() {
             <input
               className="form-control mb-3"
               placeholder="Email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -37,11 +53,16 @@ function Register() {
               className="form-control mb-3"
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className="btn btn-primary w-100" onClick={handleRegister}>
-              Register
+            <button
+              className="btn btn-primary w-100"
+              onClick={handleRegister}
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Register"}
             </button>
 
             <p className="text-center mt-3">

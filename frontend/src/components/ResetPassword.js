@@ -5,17 +5,30 @@ import { useParams } from "react-router-dom";
 
 function ResetPassword() {
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const { token } = useParams();
 
   const handleReset = async () => {
+    if (!password) {
+      alert("Please enter new password");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await axios.post(
         `${BASE_URL}/reset-password/${token}`,
         { password }
       );
+
       alert(res.data.msg);
+
     } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      alert(err.response?.data?.msg || "Server Error");
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,11 +44,16 @@ function ResetPassword() {
               className="form-control mb-3"
               type="password"
               placeholder="New Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className="btn btn-danger w-100" onClick={handleReset}>
-              Reset Password
+            <button
+              className="btn btn-danger w-100"
+              onClick={handleReset}
+              disabled={loading}
+            >
+              {loading ? "Resetting..." : "Reset Password"}
             </button>
 
           </div>

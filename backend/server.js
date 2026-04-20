@@ -10,17 +10,33 @@ const app = express();
 
 app.use(express.json());
 
-// ✅ CORS FIX (PRODUCTION READY)
-app.use(cors({
-  origin: "https://password-reset-app-6yp1-git-master-arpit-kahales-projects.vercel.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+// 🔥 ALLOWED FRONTEND URLS (IMPORTANT FOR VERCEL)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://password-reset-app-6yp1.vercel.app",
+  "https://password-reset-app-6yp1-git-master-arpit-kahales-projects.vercel.app"
+];
+
+// ✅ CORS CONFIG (FIXED)
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/users", authRoutes);
 
+// Health check
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
