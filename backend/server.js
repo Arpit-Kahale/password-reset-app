@@ -8,26 +8,22 @@ connectDB();
 
 const app = express();
 
-/* ✅ JSON middleware FIRST */
 app.use(express.json());
 
-/* ✅ CORS FIX (ONLY YOUR VERCEL FRONTEND) */
+/* CORS */
 app.use(
   cors({
     origin: "https://password-reset-app-virid.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
-
-/* ✅ Handle preflight requests */
-app.options("*", cors());
 
 /* Routes */
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/users", authRoutes);
 
-/* Test route */
+/* Health check */
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
