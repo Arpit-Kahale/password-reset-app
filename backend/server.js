@@ -12,9 +12,8 @@ app.use(express.json());
 
 // 🔥 ALLOWED FRONTEND URLS (IMPORTANT FOR VERCEL)
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://password-reset-app-6yp1.vercel.app",
-  "https://password-reset-app-6yp1-git-master-arpit-kahales-projects.vercel.app"
+  "https://password-reset-app-6yp1.vercel.app"
+
 ];
 
 // ✅ CORS CONFIG (FIXED)
