@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
 
     res.json({ msg: "User Registered Successfully" });
   } catch (error) {
-    res.status(500).json({ msg: "Server Error", error });
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ msg: "Server Error", error });
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 
@@ -59,11 +59,12 @@ exports.forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     user.resetToken = resetToken;
-    user.resetTokenExpire = Date.now() + 10 * 60 * 1000; // 10 min
+
+    // 🔥 FIX 1: increase expiry (mentor issue fix)
+    user.resetTokenExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
 
     await user.save();
 
-    // ✅ FIXED: production frontend URL
     const resetLink = `${process.env.CLIENT_URL}/reset/${resetToken}`;
 
     console.log("RESET LINK:", resetLink);
@@ -76,7 +77,7 @@ exports.forgotPassword = async (req, res) => {
 
     res.json({ msg: "Reset link sent to email" });
   } catch (error) {
-    res.status(500).json({ msg: "Server Error", error });
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 
@@ -86,13 +87,21 @@ exports.resetPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
 
+    console.log("TOKEN FROM URL:", token); // debug
+
     const user = await User.findOne({
       resetToken: token,
       resetTokenExpire: { $gt: Date.now() },
     });
 
-    if (!user)
-      return res.status(400).json({ msg: "Invalid or expired token" });
+    console.log("USER FOUND:", user); // debug
+
+    // 🔥 FIX 2: better error message
+    if (!user) {
+      return res.status(400).json({
+        msg: "Reset link expired. Please request a new one.",
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -104,6 +113,6 @@ exports.resetPassword = async (req, res) => {
 
     res.json({ msg: "Password reset successful" });
   } catch (error) {
-    res.status(500).json({ msg: "Server Error", error });
+    res.status(500).json({ msg: "Server Error" });
   }
 };
